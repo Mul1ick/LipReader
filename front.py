@@ -3,6 +3,7 @@ import tempfile
 import os
 import time
 
+from predictor import preprocess_video, predict_word
 
 def main():
     st.title("Video Upload for Model Processing")
@@ -26,7 +27,12 @@ def main():
         with open(video_path, "wb") as f:
             f.write(uploaded_file.read())
         
-        st.success(f"Video saved at {video_path}")
+        # Preprocess and predict
+        st.spinner("Running lip-reading model...")
+        preprocessed_input = preprocess_video(video_path)
+        predicted_word = predict_word(preprocessed_input)
+
+        # st.success(f"Predicted Word: **{predicted_word}**")
         
         # Display video
         st.video(video_path)
@@ -36,7 +42,7 @@ def main():
         
         # Display transcription text under video
         st.markdown("### Transcription:")
-        st.markdown("## Nice to meet you")
+        st.markdown(f"## {predicted_word}")
 
 
 if __name__ == "__main__":
